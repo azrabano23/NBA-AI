@@ -87,7 +87,7 @@ The `NBA_Fan_AI.py` program pulls from comprehensive NBA datasets to offer:
 
 ## Data 
 
-# NBA-Data-2010-2024 🏀
+## NBA-Data-2010-2024 🏀
 This dataset contains CSV files containing comprehensive NBA data spanning from the year 2010 to 2024, offering valuable insights into player statistics, team performances, game outcomes, and more.
 
 
