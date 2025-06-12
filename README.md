@@ -94,20 +94,7 @@ season_year  game_date     teamName     points  assists  reboundsTotal
 2022         2022-12-15    Warriors     38      7        5
 ...
 ```
-
 ---
-
-## 🙌 Contributing
-
-Have ideas for more stats or visual dashboards? Feel free to submit a pull request or open an issue!
-
----
-
-## 🏆 Acknowledgments
-
-Built with love for the game and powered by open data.  
-All datasets compiled and cleaned from publicly available NBA data sources (stats.nba.com & Kaggle).
-
 
 # NBA-Data-2010-2024 🏀
 This dataset contains CSV files containing comprehensive NBA data spanning from the year 2010 to 2024, offering valuable insights into player statistics, team performances, game outcomes, and more.
