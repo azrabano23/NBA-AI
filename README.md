@@ -1,98 +1,52 @@
-# 🏀 NBA AI: Interactive Basketball Insight Program
+# NBA Insight — an interactive explorer over 14 seasons of box scores
 
-Welcome to **NBA AI**, your all-in-one interactive command-line tool that empowers NBA fans to explore player stats, team performance, and trivia using real data from 2010 to 2024. Whether you're studying the game, debating stats with friends, or prepping for sports trivia, this tool has you covered.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
 
----
+An interactive tool for asking questions of **real NBA data (2010–2024)** — player stat lookups, head-to-head comparisons, recent-game results, and an auto-generated trivia mode — over the full regular-season and playoff box scores. CLI plus a React front end, containerized with Docker.
 
-## 📌 Problem Statement
-
-In the age of data, NBA fans still lack easy access to **personalized**, **interactive**, and **data-driven tools** for answering simple yet exciting questions about their favorite teams and players.
-
-> 🔍 *Most fans rely on fragmented sources like social media, sports sites, or broadcasts, which don’t offer on-demand answers to custom queries.*  
->  
-> 🏀 *Meanwhile, over 75% of Gen Z sports fans express interest in real-time and interactive stats tools for deeper engagement.*  
-> — *(Deloitte Sports Fan Insight Report, 2023)*
+A note up front, because the repo name oversells it: today this is a **data-exploration and analytics tool**, not a predictive model. The "AI" is the roadmap (see below), and I'd rather say that than dress up `groupby` as machine learning.
 
 ---
 
-## 🚀 What the Program Does
+## The problem
 
-The `NBA_Fan_AI.py` program pulls from comprehensive NBA datasets to offer:
+Sports fans are drowning in data but starved of *answers*. Box-score data for every NBA game is public, yet getting a specific answer — "how do these two players compare on rebounds over their careers?", "what was the highest-scoring game since 2010?" — still means stitching together broadcasts, social posts, and stat sites. **Over 75% of Gen Z sports fans say they want real-time, interactive stats tools for deeper engagement** ([Deloitte Sports Fan Insight, 2023](https://www2.deloitte.com/us/en/insights/industry/technology/technology-media-and-telecom-predictions.html)). The data is there; the *interface* to it isn't.
 
-### ✅ Game & Player Insights
-- **Recent Game Results**: View a team’s most recent matchups, scores, and outcomes.
-- **Player Stats Lookup**: Pull season-by-season game stats like points, assists, and rebounds.
+## Market
 
-### 🥇 Smart Comparisons
-- **Compare Players**: Evaluate two players head-to-head based on average points, rebounds, and assists.
-- **Compare Teams**: Analyze team performance by comparing win percentage and scoring averages.
+Fan-facing sports analytics is a large and growing space — sports analytics overall is projected past **USD 10B by the late 2020s** (MarketsandMarkets), pulled by fantasy, betting, and second-screen engagement. The won part of the market is professional/enterprise (Stats Perform, Second Spectrum); the open part is lightweight, fan-facing tools that make public data conversational. This project lives in that second category.
 
-### ❓ Fun Trivia Generator
-- Auto-generates trivia questions such as:
-  - "Which team had the most blocks in 2017?"
-  - "Which player scored the most points in a single game?"
-  - "Who led the league in wins in 2020?"
+## What it does
 
----
+- **Recent games** — a team's latest matchups, scores, and outcomes.
+- **Player lookup** — season-by-season points, assists, rebounds for any player.
+- **Head-to-head** — compare two players (or two teams) on average points, rebounds/assists, win %, scoring.
+- **Records** — e.g. the highest single-game point total in the dataset.
+- **Trivia mode** — auto-generates questions from the data ("which team had the most blocks in 2017?").
 
-## 🧠 Technical Specifications
+## Technical breakdown
 
-### 🔧 Programming Language
-- **Python 3.x**
+- **Real, non-trivial data.** The full 2010–2024 box scores ship in the repo — regular season and playoffs, totals and per-game — split across multiple CSV parts because the row counts are large. The interesting work is consistent joins/filters across files with differing schemas (`personName` vs `TEAM_NAME`, `game_date` vs `GAME_DATE`).
+- **Query layer** (`pandas` / `numpy`) — name-tolerant lookups (case-insensitive substring matching), date-sorted recency, and aggregate comparisons computed on the fly.
+- **Two front ends** — an interactive Python CLI and a **React** web app (`frontend/`), with a **Dockerfile** so the whole thing runs reproducibly.
 
-### 📂 Datasets Used (included in this repo)
-- `regular_season_box_scores_2010_2024_part_1.csv`
-- `play_off_box_scores_2010_2024.csv`
-- `regular_season_totals_2010_2024.csv`
+**Skills demonstrated:** wrangling a real multi-file dataset with inconsistent schemas; designing a forgiving query interface for messy human input (player names); and packaging a data tool with both a CLI and a web front end behind Docker.
 
-### 📚 Libraries & Tools
-| Category              | Libraries Used                       |
-|-----------------------|--------------------------------------|
-| Data Manipulation     | `pandas`, `numpy`                    |
-| Display & Interaction | `IPython.display`, `input()`        |
-| Randomization         | `random`                             |
+## Roadmap — earning the "AI"
 
----
+The natural next step is the predictive layer the name promises: game-outcome prediction from rolling team form, player-performance projection, and similarity search ("players most like this one") via simple embeddings over the stat vectors. The dataset already supports it; that's the honest gap between what this is and what it's named.
 
-## 🖥️ How to Run
+## Run it
 
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/your-username/nba-fan-ai.git
-   cd nba-fan-ai
-   ```
+```bash
+pip install -r requirements.txt
+python app.py            # interactive CLI
 
-2. **Install Required Libraries** (if not already installed):
-   ```bash
-   pip install pandas numpy
-   ```
-
-3. **Make Sure CSV Files Are in the Same Folder**
-
-4. **Run the Program**:
-   ```bash
-   python NBA_Fan_AI.py
-   ```
-
----
-
-## 🎯 Target Audience
-
-- 🧑‍💻 **Sports Analytics Enthusiasts**
-- 👩‍🏫 **Students and Educators** learning data science through real-world sports data
-- 🎮 **Fantasy League Players** making informed decisions
-- 🗣️ **Casual NBA Fans** who love stats and trivia
-
----
-
-## Data 
-
-## NBA-Data-2010-2024 🏀
-This dataset contains CSV files containing comprehensive NBA data spanning from the year 2010 to 2024, offering valuable insights into player statistics, team performances, game outcomes, and more.
-
-
-## Authors of Dataset
-[@NocturneBear](https://github.com/NocturneBear)
+# or the containerized web app
+docker build -t nba-insight . && docker run -p 8501:8501 nba-insight
+```
 
 ## License
-[MIT](https://github.com/NocturneBear/NBA-Data-2010-2024/blob/main/LICENSE)
+
+MIT — see [LICENSE](LICENSE). Author: **Azra Bano**.
